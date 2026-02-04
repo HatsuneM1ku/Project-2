@@ -127,14 +127,18 @@
                 cursor.style.display = 'none';
                 // 打字完成后显示提示
                 setTimeout(() => {
-                    cursor.insertAdjacentText('beforebegin', "\n\n[ enter ]");
+                    const enterLink = document.createElement('span');
+                    enterLink.textContent = "\n\n[ enter ]";
+                    enterLink.style.cursor = 'pointer';
+                    enterLink.onclick = () => { window.location.href = 'title.html'; };
+                    cursor.insertAdjacentElement('afterend', enterLink);
                 }, 500);
             }
         }
 
         document.addEventListener('keydown', (event) => {
             if (event.key === 'Enter' && lineIndex === lines.length) {
-                // 按下回车键后跳转到 journal.html
+                // 按下回车键后跳转到 title.html
                 window.location.href = 'title.html';
             }
         });
