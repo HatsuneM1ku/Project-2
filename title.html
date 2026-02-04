@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Click Box → Modal</title>
+  <style>
+    html,
+    body {
+      overflow: hidden;
+      height: 100%;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      margin: 0;
+    }
+
+    .page {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      top: 0;
+      left: 0;
+      width: 100%;
+      min-height: 100vh;
+      background: linear-gradient(#2a2a2a, #111);
+    }
+
+    /* 缩小版 board */
+    .mini-board {
+      position: relative;
+      top: 50px;
+      width: 1200px;
+      height: 700px;
+      transform: scale(0.6);
+      transform-origin: top center;
+      transition: transform 0.6s ease-in-out;
+    }
+
+    .mini-board iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      pointer-events: none;
+      /* 禁止交互 */
+    }
+
+    /* 放大动画 */
+    .mini-board.expanding {
+      transform: scale(1);
+    }
+
+    .content {
+      position: absolute;
+      bottom: 100px;
+      display: flex;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .pbox {
+      margin-bottom: 50px;
+      padding: 0;
+    }
+
+    .pbox p {
+      font-size: 18px;
+      color: #ccc;
+      margin: 12px 0;
+      text-align: center;
+    }
+
+    .menu button {
+      background: #6e6e6e;
+      color: white;
+      border: none;
+      padding: 16px 48px;
+      cursor: pointer;
+      font-size: 36px;
+      border-radius: 8px;
+      transition: background 0.2s;
+      margin: 0 auto;
+    }
+
+    .menu button:hover {
+      background: #888;
+    }
+
+    /* 页面淡出 */
+    .page.fade-out .content {
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page" id="page">
+    <div class="mini-board" id="miniBoard">
+      <iframe src="journal.html?embed=true" id="boardIframe"></iframe>
+    </div>
+    <div class="content">
+      <div class="menu">
+        <div class="pbox">
+          <p>Every day, I find a page of diary on my desk.</p>
+          <p>At first, I thought I wrote it.</p>
+          <p>One day, I realized it was not written by “me.”</p>
+          <p>But after that, I never stopped reading it.</p>
+          <p style="color: #f4e3a1; font-size: 24px;">SO, WHAT HAPPENED?</p>
+        </div>
+        <button id="startBtn">START</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const startBtn = document.getElementById('startBtn');
+    const miniBoard = document.getElementById('miniBoard');
+    const page = document.getElementById('page');
+
+    startBtn.addEventListener('click', () => {
+      // 淡出按钮
+      page.classList.add('fade-out');
+
+      // 开始放大动画
+      setTimeout(() => {
+        miniBoard.classList.add('expanding');
+      }, 100);
+
+      // 动画结束后跳转
+      setTimeout(() => {
+        location.href = 'journal.html';
+      }, 800);
+    });
+  </script>
+</body>

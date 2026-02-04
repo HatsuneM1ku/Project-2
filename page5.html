@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Fragment 05</title>
+    <link rel="stylesheet" href="page.css">
+    <style>
+        .button-group {
+            margin-top: 15px;
+        }
+        .button-group button {
+            margin-right: 20px;
+        }
+        #message {
+            margin-top: 15px;
+            font-size: 14px;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="diary">
+        Today I placed a mirror on my desk.<br><br>
+        I stared at "me" for a long time.<br>
+        I wasn't sure if it was still me.
+    </div>
+
+    <div class="game" id="game">
+        <div>Choose carefully. Who is "me"?</div>
+        <div class="button-group">
+            <button id="btnMe" onclick="choose('me')">me</button>
+            <button id="btnYou" onclick="choose('you')">you</button>
+        </div>
+        <div id="message"></div>
+    </div>
+
+    <div class="unlocked-content" id="unlockedContent" style="display: none;">
+        <p>I finally understood.</p>
+        <p>"Me" was not something I could point at.<br>
+        It was something I had to insist on.</p>
+    </div>
+
+    <script>
+        let count = 0;
+        let swapped = false;
+
+        if (localStorage.getItem('page5_unlocked') === 'true') {
+            document.getElementById('game').style.display = 'none';
+            document.getElementById('unlockedContent').style.display = 'block';
+        }
+
+        function choose(choice) {
+            const msg = document.getElementById("message");
+            const btnMe = document.getElementById("btnMe");
+            const btnYou = document.getElementById("btnYou");
+
+            // 在对调后，判断实际点击的是哪个
+            let actualChoice = choice;
+            if (swapped) {
+                actualChoice = (choice === "me") ? "you" : "me";
+            }
+
+            if (actualChoice === "me") {
+                count++;
+                msg.innerText = count + "/20";
+
+                // 第19次对调按钮
+                if (count === 19 && !swapped) {
+                    const temp = btnMe.innerText;
+                    btnMe.innerText = btnYou.innerText;
+                    btnYou.innerText = temp;
+                    swapped = true;
+                }
+
+                // 成功解锁
+                if (count === 20) {
+                    localStorage.setItem('page5_unlocked', 'true');
+                    document.getElementById('game').style.display = 'none';
+                    document.getElementById('unlockedContent').style.display = 'block';
+                }
+
+            } else {
+                msg.innerText = "You lost yourself. Try again.";
+                count = 0;
+                // 重置按钮
+                if (swapped) {
+                    btnMe.innerText = "me";
+                    btnYou.innerText = "you";
+                    swapped = false;
+                }
+            }
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Journal</title>
+  <link rel="stylesheet" href="journal.css">
+</head>
+
+<body>
+
+  <script>
+    // 检测是否为 embed 模式
+    if (window.location.search.includes('embed=true')) {
+      document.body.classList.add('embed-mode');
+    }
+  </script>
+
+  <div class="table">
+    <div class="board">
+      <div class="note n1" data-href="page1.html">
+        handwriting
+      </div>
+      <div class="note n2" data-href="page2.html">
+        midnight?
+      </div>
+      <div class="note n3" data-href="page3.html">footsteps</div>
+      <div class="note n4" data-href="page4.html">a name</div>
+      <div class="note n5" data-href="page5.html">mirror</div>
+      <div class="note n6" data-href="page6.html">me</div>
+      <button class="reset-btn" onclick="resetAll()">RESET ALL</button>
+    </div>
+
+    <div class="back-area" id="backArea">
+      <span class="back-text">back to title</span>
+    </div>
+
+    <div class="title">
+      I tried to organize everything orderly.
+    </div>
+  </div>
+
+  <!-- 弹窗 -->
+  <div class="modal" id="modal">
+    <span class="close-btn" id="closeBtn">&times;</span>
+    <div class="modal-content">
+      <iframe id="modalIframe" src=""></iframe>
+    </div>
+  </div>
+
+  <script>
+    // 返回首页功能
+    const backArea = document.getElementById('backArea');
+    const board = document.querySelector('.board');
+    const table = document.querySelector('.table');
+
+    backArea.addEventListener('click', () => {
+      // 淡出其他元素
+      table.classList.add('fading');
+
+      // 开始缩小动画
+      setTimeout(() => {
+        board.classList.add('shrinking');
+      }, 100);
+
+      // 动画结束后跳转
+      setTimeout(() => {
+        location.href = 'title.html';
+      }, 800);
+    });
+
+    // 重置所有页面状态
+    function resetAll() {
+      // 清除所有 page 的解锁状态
+      localStorage.removeItem('page1_unlocked');
+      localStorage.removeItem('page2_unlocked');
+      localStorage.removeItem('page3_unlocked');
+      localStorage.removeItem('page4_unlocked');
+      localStorage.removeItem('page5_unlocked');
+      localStorage.removeItem('page6_unlocked');
+
+      alert('All fragments have been reset!');
+
+      // 移除所有 note 的 unlocked 类
+      document.querySelectorAll('.note').forEach(note => {
+        note.classList.remove('unlocked');
+      });
+
+      // 隐藏 n6
+      const n6 = document.querySelector('.n6');
+      if (n6) n6.classList.remove('revealed');
+    }
+
+    // 检查解锁状态，给已解锁的 note 添加 unlocked 类
+    function checkUnlockStatus() {
+      let unlockedCount = 0;
+      for (let i = 1; i <= 5; i++) {
+        if (localStorage.getItem(`page${i}_unlocked`) === 'true') {
+          const note = document.querySelector(`.n${i}`);
+          if (note) note.classList.add('unlocked');
+          unlockedCount++;
+        }
+      }
+      
+      // 如果所有5个页面都解锁了，显示第6个便签
+      if (unlockedCount >= 5) {
+        const n6 = document.querySelector('.n6');
+        if (n6) {
+          // 延迟一点再显现，增加戏剧效果
+          setTimeout(() => {
+            n6.classList.add('revealed');
+          }, 500);
+        }
+      }
+    }
+    checkUnlockStatus();
+
+    // 拖拽功能
+    const notes = document.querySelectorAll('.note');
+
+    notes.forEach(note => {
+      let isDragging = false;
+      let hasMoved = false;
+      let offsetX, offsetY;
+      let startX, startY;
+
+      note.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        hasMoved = false;
+        startX = e.clientX;
+        startY = e.clientY;
+
+        const rect = note.getBoundingClientRect();
+        offsetX = e.clientX - rect.left;
+        offsetY = e.clientY - rect.top;
+
+        note.classList.add('dragging');
+        note.style.transform = 'scale(1.05)';
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+
+        // 检测是否真的移动了
+        if (Math.abs(e.clientX - startX) > 5 || Math.abs(e.clientY - startY) > 5) {
+          hasMoved = true;
+        }
+
+        const board = document.querySelector('.board');
+        const boardRect = board.getBoundingClientRect();
+
+        let newX = e.clientX - boardRect.left - offsetX;
+        let newY = e.clientY - boardRect.top - offsetY;
+
+        // 限制在board范围内
+        newX = Math.max(0, Math.min(newX, boardRect.width - note.offsetWidth));
+        newY = Math.max(0, Math.min(newY, boardRect.height - note.offsetHeight));
+
+        note.style.left = newX + 'px';
+        note.style.top = newY + 'px';
+      });
+
+      document.addEventListener('mouseup', () => {
+        if (isDragging) {
+          isDragging = false;
+          note.classList.remove('dragging');
+          note.style.transform = '';
+        }
+      });
+
+      // 只有没拖动时才触发弹窗
+      note.addEventListener('mouseup', () => {
+        if (!hasMoved && note.dataset.href) {
+          openModal(note.dataset.href);
+        }
+      });
+    });
+
+    // 弹窗功能
+    const modal = document.getElementById('modal');
+    const modalIframe = document.getElementById('modalIframe');
+    const closeBtn = document.getElementById('closeBtn');
+
+    function openModal(url) {
+      modalIframe.src = url;
+      modal.classList.add('active');
+    }
+
+    function closeModal() {
+      modal.classList.remove('active');
+      modalIframe.src = '';  // 清空 iframe
+      checkUnlockStatus();   // 重新检查解锁状态
+    }
+
+    closeBtn.addEventListener('click', closeModal);
+
+    // 点击弹窗外部关闭
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+
+    // ESC 键关闭弹窗
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
+    });
+
+    // 监听 iframe 内部发来的关闭消息
+    window.addEventListener('message', (e) => {
+      if (e.data === 'closeModal') {
+        closeModal();
+      }
+    });
+  </script>
+
+</body>
+
+</html>

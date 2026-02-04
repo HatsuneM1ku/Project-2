@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Fragment 02</title>
+  <link rel="stylesheet" href="page.css">
+</head>
+
+<body>
+
+  <div class="diary">
+    The diary said: midnight.<br><br>
+    But the sky outside<br>
+    did not look like night.
+  </div>
+
+  <div class="game" id="game">
+    <div>Try to remember.....</div>
+    <button onclick="unlock()">REMEMBER</button>
+  </div>
+
+  <!-- 解锁后显示的内容 -->
+  <div class="unlocked-content" id="unlockedContent" style="display: none;">
+    <p>I smelled breakfast from the street.</p>
+    <p>Fried dough, soy milk —<br>things that only appear in the morning.</p>
+  </div>
+
+  <script>
+    let count = 0;
+
+    // 检查是否已解锁
+    if (localStorage.getItem('page2_unlocked') === 'true') {
+      document.getElementById('game').style.display = 'none';
+      document.getElementById('unlockedContent').style.display = 'block';
+    }
+
+    function unlock() {
+      count++;
+      if (count >= 5) {
+        // 保存解锁状态
+        localStorage.setItem('page2_unlocked', 'true');
+
+        // 隐藏游戏，显示内容
+        document.getElementById('game').style.display = 'none';
+        document.getElementById('unlockedContent').style.display = 'block';
+      }
+    }
+  </script>
+
+</body>
+
+</html>

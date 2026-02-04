@@ -1,0 +1,47 @@
+body {
+  margin: 0;
+  background: transparent;
+  color: #eee;
+  font-family: serif;
+  padding: 40px;
+}
+
+/* 日记文本 */
+.diary {
+  margin-bottom: 40px;
+}
+
+/* 小游戏 */
+.game {
+  margin-top: 20px;
+  padding: 20px;
+  background: #2a2a2a;
+  border: 1px dashed #666;
+}
+
+/* 输入框 */
+.game input[type="text"],
+.game input:not([type]) {
+  padding: 6px 12px;
+  font-size: 16px;
+  width: 200px;
+}
+
+/* 按钮 */
+button {
+  margin-top: 10px;
+  background: #444;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #666;
+}
+
+/* 解锁后内容 */
+.unlocked-content {
+  display: none;
+}

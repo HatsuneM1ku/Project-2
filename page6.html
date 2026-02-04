@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Fragment 06</title>
+    <link rel="stylesheet" href="page.css">
+</head>
+
+<body>
+
+    <div class="diary">
+        I finally understood.
+    </div>
+
+    <div class="unlocked-content" id="unlockedContent" style="display: none;">
+        <p>These diaries were not written by someone else.</p>
+        <p>They were written by me.</p>
+        <p>Or more precisely,</p>
+        <p>by the version of myself that I refused to admit was real.</p>
+    </div>
+
+    <a href="ending.html" class="arrow-link" id="arrowLink" style="display: none;" target="_top">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+    </a>
+
+    <style>
+        .arrow-link {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            color: #888;
+            transition: color 0.3s;
+        }
+        .arrow-link:hover {
+            color: #fff;
+        }
+    </style>
+
+    <script>
+        document.body.addEventListener('click', function(e) {
+            if (e.target.closest('.arrow-link')) return;
+            document.getElementById('unlockedContent').style.display = 'block';
+            document.getElementById('arrowLink').style.display = 'block';
+        }, { once: true });
+    </script>
+
+</body>
+
+</html>

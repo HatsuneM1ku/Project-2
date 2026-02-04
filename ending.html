@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>The Truth</title>
+    <style>
+        body {
+            background: linear-gradient(#2a2a2a, #111);
+            color: #eaeaea;
+            font-family: "Courier New", monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #text {
+            width: 750px;
+            font-size: 20px;
+            line-height: 1.6;
+            white-space: pre-line;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 6px;
+            height: 1.2em;
+            background: white;
+            margin-left: 2px;
+            vertical-align: text-bottom;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% {
+                opacity: 1;
+            }
+            50.1%, 100% {
+                opacity: 0;
+            }
+        }
+
+        .arrow-link {
+            position: fixed;
+            bottom: 40px;
+            left: 40px;
+            color: #888;
+            transition: color 0.3s;
+            display: none;
+        }
+        .arrow-link:hover {
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <a href="title.html" class="arrow-link" id="arrowLink">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+    </a>
+
+    <div id="text"><span class="cursor"></span></div>
+
+    <script>
+        const lines = [
+            "The truth is...\n",
+            "\nThere was no ghost.\n",
+            "\nNo stranger writing in my diary.\n",
+            "\nIt was always me.\n",
+            "\nI created a 'more ideal version of me,' allowing it to live, record, and think on my behalf.\n",
+            "\nThe version of me that only exists at midnight.\n",
+            "\nThe one who writes the things I'm too afraid to say in daylight.\n",
+            "\n...\n",
+            "\nI was never haunted.\n",
+            "\nI was just lonely."
+        ];
+
+        let lineIndex = 0;
+        let charIndex = 0;
+        const speed = 50;
+        const textEl = document.getElementById("text");
+        const cursor = document.querySelector(".cursor");
+
+        // 页面加载后自动开始打字
+        setTimeout(type, 500);
+
+        function type() {
+            if (lineIndex < lines.length) {
+                const line = lines[lineIndex];
+                if (charIndex < line.length) {
+                    cursor.insertAdjacentText('beforebegin', line[charIndex]);
+                    charIndex++;
+                    setTimeout(type, speed);
+                } else {
+                    lineIndex++;
+                    charIndex = 0;
+                    setTimeout(type, 600);
+                }
+            } else {
+                // 打字结束后隐藏光标，显示返回箭头
+                setTimeout(() => {
+                    cursor.style.display = 'none';
+                    document.getElementById('arrowLink').style.display = 'block';
+                }, 1000);
+            }
+        }
+    </script>
+
+</body>
+
+</html>

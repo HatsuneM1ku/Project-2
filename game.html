@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Click Box → Modal</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      padding: 40px;
+    }
+
+    /* 触发方块 */
+    .box {
+      width: 120px;
+      height: 120px;
+      border-width: 1px;
+      border-style: solid;
+      border-color: #222;
+      background: #f7f6ed;
+      border-radius: 16px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    /* 遮罩层（默认隐藏） */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      display: none;
+      /* 关键：隐藏 */
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    /* 小窗口 */
+    .modal {
+      width: min(360px, 100%);
+      background: white;
+      border-radius: 16px;
+      padding: 16px 16px 14px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+
+      /* 动画初始状态 */
+      opacity: 0;
+      transform: scale(0.92) translateY(6px);
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    /* 打开时：显示遮罩 + 播放弹窗动画 */
+    .overlay.show {
+      display: flex;
+    }
+
+    .overlay.show .modal {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .title {
+      font-weight: 700;
+      font-size: 16px;
+    }  
+
+    .close {
+
+      border: none;
+      background: transparent;
+      font-size: 20px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 6px 10px;
+      border-radius: 10px;
+    }
+
+    .close:hover {
+      background: rgba(0, 0, 0, 0.06);
+    }
+
+    .content {
+      font-size: 14px;
+      line-height: 1.5;
+      color: #222;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="box" id="trigger" aria-label="点击打开小窗口"></div>
+
+  <div class="overlay" id="overlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header">
+        <div class="title" id="modalTitle">Title</div>
+        <button class="close" id="closeBtn" aria-label="关闭">×</button>
+      </div>
+      <div class="content">
+        Content
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const trigger = document.getElementById("trigger");
+    const overlay = document.getElementById("overlay");
+    const closeBtn = document.getElementById("closeBtn");
+
+    function openModal() {
+      overlay.classList.add("show");
+      overlay.setAttribute("aria-hidden", "false");
+    }
+
+    function closeModal() {
+      overlay.classList.remove("show");
+      overlay.setAttribute("aria-hidden", "true");
+    }
+
+    trigger.addEventListener("click", openModal);
+    closeBtn.addEventListener("click", closeModal);
+
+    // 点击遮罩关闭（点到弹窗本体不关闭）
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) closeModal();
+    });
+
+    // 按 ESC 关闭
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeModal();
+    });
+  </script>
+
+</body>
+
+</html>

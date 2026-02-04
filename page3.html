@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Fragment 03</title>
+  <link rel="stylesheet" href="page.css">
+</head>
+
+<body>
+
+  <div class="diary">
+    While I was reading the diary,<br>
+    I heard footsteps outside the door.
+  </div>
+
+  <div class="game" id="game">
+    <button onclick="listen()">listen</button>
+    <div id="msg"></div>
+  </div>
+
+  <!-- 解锁后显示的内容 -->
+  <div class="unlocked-content" id="unlockedContent" style="display: none;">
+    <p>But I live on the top floor.</p>
+    <p>No one should be walking in the hallway.</p>
+  </div>
+
+  <script>
+    let count = 0;
+
+    // 检查是否已解锁
+    if (localStorage.getItem('page3_unlocked') === 'true') {
+      document.getElementById('game').style.display = 'none';
+      document.getElementById('unlockedContent').style.display = 'block';
+    }
+
+    function listen() {
+      count++;
+      document.getElementById("msg").innerText = "footsteps: " + count;
+
+      if (count >= 5) {
+        // 保存解锁状态
+        localStorage.setItem('page3_unlocked', 'true');
+
+        // 隐藏游戏，显示内容
+        document.getElementById('game').style.display = 'none';
+        document.getElementById('unlockedContent').style.display = 'block';
+      }
+    }
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Fragment 04</title>
+  <link rel="stylesheet" href="page.css">
+</head>
+
+<body>
+
+  <div class="diary">
+    At the end of one page,<br>
+    there was a name.
+  </div>
+
+  <div class="game" id="game">
+    <input id="nameInput" placeholder="type the name">
+    <button onclick="reveal()">read</button>
+  </div>
+
+  <!-- 解锁后显示的内容 -->
+  <div class="unlocked-content" id="unlockedContent" style="display: none;">
+    <p>It was not my name.</p>
+    <p>But when I read it aloud,<br>it felt strangely familiar.</p>
+  </div>
+
+  <script>
+    // 检查是否已解锁
+    if (localStorage.getItem('page4_unlocked') === 'true') {
+      document.getElementById('game').style.display = 'none';
+      document.getElementById('unlockedContent').style.display = 'block';
+    }
+
+    function reveal() {
+      const value = document.getElementById("nameInput").value;
+      if (value.trim() !== "") {
+        // 保存解锁状态
+        localStorage.setItem('page4_unlocked', 'true');
+
+        // 隐藏游戏，显示内容
+        document.getElementById('game').style.display = 'none';
+        document.getElementById('unlockedContent').style.display = 'block';
+      }
+    }
+  </script>
+
+</body>
+
+</html>

@@ -1,141 +1,144 @@
-<!doctype html>
-<html lang="zh">
+<!DOCTYPE html>
+<html>
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Click Box → Modal</title>
-  <style>
-    body {
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      padding: 40px;
-    }
+    <meta charset="UTF-8">
+    <title>Game</title>
+    <style>
+        body {
+            background: linear-gradient(#2a2a2a, #111);
+            color: #eaeaea;
+            font-family: "Courier New", monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
 
-    /* 触发方块 */
-    .box {
-      width: 120px;
-      height: 120px;
-      background: #111;
-      border-radius: 16px;
-      cursor: pointer;
-      user-select: none;
-    }
+        #text {
+            width: 750px;
+            font-size: 20px;
+            line-height: 1.6;
+            white-space: pre-line;
+        }
 
-    /* 遮罩层（默认隐藏） */
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.4);
-      display: none;
-      /* 关键：隐藏 */
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
+        .cursor {
+            display: inline-block;
+            width: 6px;
+            height: 1.2em;
+            background: white;
+            margin-left: 2px;
+            vertical-align: text-bottom;
+            animation: blink 1s infinite;
+        }
 
-    /* 小窗口 */
-    .modal {
-      width: min(360px, 100%);
-      background: white;
-      border-radius: 16px;
-      padding: 16px 16px 14px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+        @keyframes blink {
 
-      /* 动画初始状态 */
-      opacity: 0;
-      transform: scale(0.92) translateY(6px);
-      transition: opacity 180ms ease, transform 180ms ease;
-    }
+            0%,
+            50% {
+                opacity: 1;
+            }
 
-    /* 打开时：显示遮罩 + 播放弹窗动画 */
-    .overlay.show {
-      display: flex;
-    }
+            50.1%,
+            100% {
+                opacity: 0;
+            }
+        }
 
-    .overlay.show .modal {
-      opacity: 1;
-      transform: scale(1) translateY(0);
-    }
+        #start {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 10;
+        }
 
-    .modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 8px;
-    }
-
-    .title {
-      font-weight: 700;
-      font-size: 16px;
-    }
-
-    .close {
-      border: none;
-      background: transparent;
-      font-size: 20px;
-      cursor: pointer;
-      line-height: 1;
-      padding: 6px 10px;
-      border-radius: 10px;
-    }
-
-    .close:hover {
-      background: rgba(0, 0, 0, 0.06);
-    }
-
-    .content {
-      font-size: 14px;
-      line-height: 1.5;
-      color: #222;
-    }
-  </style>
+        #start span {
+            font-size: 24px;
+            color: #eaeaea;
+        }
+    </style>
 </head>
 
 <body>
 
-  <div class="box" id="trigger" aria-label="点击打开小窗口"></div>
+    <div id="start"><span>[ click to start ]</span></div>
+    <div id="text"><span class="cursor"></span></div>
 
-  <div class="overlay" id="overlay" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <div class="modal-header">
-        <div class="title" id="modalTitle">小窗口标题</div>
-        <button class="close" id="closeBtn" aria-label="关闭">×</button>
-      </div>
-      <div class="content">
-        这里是内容。你可以放文字、按钮、图片、表单都行。
-      </div>
-    </div>
-  </div>
+    <script>
+        const lines = [
+            "Hello, I want to play a game.\n",
+            "\nThe rule is simple.\n",
+            "\nRead all the paragraphs and tell the complete story.\n",
+            "\nSUCCESS or FAILURE.\n",
+            "\nMake your choice."
+        ];
 
-  <script>
-    const trigger = document.getElementById("trigger");
-    const overlay = document.getElementById("overlay");
-    const closeBtn = document.getElementById("closeBtn");
+        let lineIndex = 0;
+        let charIndex = 0;
+        const speed = 50; // 打字速度（越小越快）
+        const textEl = document.getElementById("text");
+        const cursor = document.querySelector(".cursor");
 
-    function openModal() {
-      overlay.classList.add("show");
-      overlay.setAttribute("aria-hidden", "false");
-    }
+        // 创建音频对象（把 "your-audio.mp3" 换成你的文件名）
+        const audio1 = new Audio("saw-i-want-to-play-a-game.mp3");
+        const audio2 = new Audio("make-your-choice.m4a");
+        audio2.volume = 0.4;
 
-    function closeModal() {
-      overlay.classList.remove("show");
-      overlay.setAttribute("aria-hidden", "true");
-    }
+        // 点击开始
+        document.getElementById("start").addEventListener("click", function () {
+            this.style.display = "none";
+            type();
+        });
 
-    trigger.addEventListener("click", openModal);
-    closeBtn.addEventListener("click", closeModal);
+        function type() {
+            if (lineIndex < lines.length) {
+                const line = lines[lineIndex];
+                if (charIndex < line.length) {
+                    // 在光标前插入文字
+                    cursor.insertAdjacentText('beforebegin', line[charIndex]);
 
-    // 点击遮罩关闭（点到弹窗本体不关闭）
-    overlay.addEventListener("click", (e) => {
-      if (e.target === overlay) closeModal();
-    });
+                    // 当打到 "I" 时播放音频（第一行第7个字符）
+                    if (lineIndex === 0 && charIndex === 7) {
+                        audio1.play();
+                    }
 
-    // 按 ESC 关闭
-    window.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") closeModal();
-    });
-  </script>
+                    // 当打到 "Make" 的 M 时播放 audio2（第5行第2个字符）
+                    if (lineIndex === 4 && charIndex === 1) {
+                        audio2.play();
+                    }
+                  
+
+                    charIndex++;
+                    setTimeout(type, speed);
+                } else {
+                    lineIndex++;
+                    charIndex = 0;
+                    setTimeout(type, 400); // 行与行之间停顿
+                }
+            } else {
+                // 打字结束后隐藏光标
+                cursor.style.display = 'none';
+                // 打字完成后显示提示
+                setTimeout(() => {
+                    cursor.insertAdjacentText('beforebegin', "\n\n[ enter ]");
+                }, 500);
+            }
+        }
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' && lineIndex === lines.length) {
+                // 按下回车键后跳转到 journal.html
+                window.location.href = 'title.html';
+            }
+        });
+    </script>
 
 </body>
 

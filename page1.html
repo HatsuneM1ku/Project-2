@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Fragment 01</title>
+  <link rel="stylesheet" href="page.css">
+</head>
+
+<body>
+
+  <div class="diary">
+    Today I opened my diary.<br><br>
+    The handwriting looked familiar,<br>
+    but I don't remember writing these words.
+  </div>
+
+  <div class="game" id="game">
+    <div>The Remaining Is Hidden</div>
+    <input type="range" id="slider">
+    <button onclick="next()">UNLOCK</button>
+  </div>
+
+  <!-- 解锁后显示的内容 -->
+  <div class="unlocked-content" id="unlockedContent" style="display: none;">
+    <p>The strokes were too neat.</p>
+    <p>It felt like someone was carefully imitating my own writing.</p>
+  </div>
+
+  <script>
+    // 检查是否已解锁
+    if (localStorage.getItem('page1_unlocked') === 'true') {
+      document.getElementById('game').style.display = 'none';
+      document.getElementById('unlockedContent').style.display = 'block';
+    }
+
+    function next() {
+      const value = document.getElementById("slider").value;
+      if (value > 80) {
+        // 保存解锁状态
+        localStorage.setItem('page1_unlocked', 'true');
+
+        // 隐藏游戏，显示内容
+        document.getElementById('game').style.display = 'none';
+        document.getElementById('unlockedContent').style.display = 'block';
+      } else {
+        alert("Try Again.");
+      }
+    }
+  </script>
+
+</body>
+
+</html>
